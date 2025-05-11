@@ -1,0 +1,196 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom animations for Click & Collect */
+@keyframes liquid-flow {
+  0% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(150px);
+  }
+}
+
+/* Nouvelle animation pour le liquide qui coule */
+@keyframes liquidFlow {
+  0% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(380px);
+  }
+}
+
+@keyframes splash-effect {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.5);
+  }
+}
+
+@keyframes tea-wave {
+  0% {
+    transform: scaleY(0.95) scaleX(1);
+  }
+
+  50% {
+    transform: scaleY(1.05) scaleX(0.98);
+  }
+
+  100% {
+    transform: scaleY(0.95) scaleX(1);
+  }
+}
+
+@keyframes surface-wave {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+
+  50% {
+    transform: translateY(-5px) scaleY(1.5);
+  }
+}
+
+@keyframes spear-smoke {
+  0% {
+    transform: translateY(-40px) scaleX(1);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(-100px) scaleX(4);
+    background: linear-gradient(to left, #ffffff29, rgba(233, 202, 182, 0.64));
+  }
+
+  80% {
+    transform: translateY(-180px) scaleX(6);
+  }
+
+  90% {
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(-300px) scaleX(8);
+  }
+}
+
+/* Ancienne définition pour la version HTML */
+.liquid-stream::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(to bottom, #8b4513, #6b3e07);
+  border-radius: 3px;
+  animation: liquid-flow 0.3s linear infinite;
+}
+
+.tea {
+  background: linear-gradient(to left, #8b4513, #6b3e07);
+  height: var(--fill-level, 0%);
+  animation: tea-wave 3s linear infinite alternate;
+  transition: height 0.5s ease-out;
+}
+
+.tea::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(to left, #9b5823, #7b4813);
+  border-radius: 50%;
+  animation: surface-wave 2s ease-in-out infinite;
+}
+
+/* Fumée - utiliser la même animation que dans la version HTML */
+.tea-smoke span {
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to left, #d4d4d429, #f7e0cca3);
+  display: block;
+  border-radius: 50%;
+  animation: spear-smoke 5s linear infinite;
+  opacity: 0;
+  filter: blur(8px);
+  padding: 0 10px;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+
+/* Classe pour la fumée dans React */
+.smoke-span {
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to left, #d4d4d429, #f7e0cca3);
+  display: block;
+  border-radius: 50%;
+  animation: spear-smoke 5s linear infinite;
+  opacity: 0;
+  filter: blur(8px);
+  padding: 0 10px;
+}
+
+/* Buttons 3D effects */
+.button-3d:hover .button-front {
+  transform: translateY(-6px);
+  transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button-3d:active .button-front {
+  transform: translateY(-2px);
+  transition: transform 34ms;
+}
+
+.button-3d:hover .button-shadow {
+  transform: translateY(4px);
+  transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button-3d:active .button-shadow {
+  transform: translateY(1px);
+  transition: transform 34ms;
+}
