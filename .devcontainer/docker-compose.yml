@@ -19,6 +19,7 @@ services:
       DB_DATABASE: backend_db
       DB_USERNAME: backend_user
       DB_PASSWORD: cafe_password
+      COMPOSER_PROCESS_TIMEOUT: 2000
     command: >
       sh -c "
         apt-get update && 
