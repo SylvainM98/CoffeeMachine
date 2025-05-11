@@ -3,12 +3,7 @@ services:
   laravel.test:
     env_file:
       - ../backend/.env
-    build:
-      context: ../backend/vendor/laravel/sail/runtimes/8.2
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-    image: sail-8.2/app
+    image: php:8.2-cli
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
@@ -26,33 +21,28 @@ services:
       DB_PASSWORD: cafe_password
     command: >
       sh -c "
-        # Attendre que MySQL soit prêt
+        apt-get update && 
+        apt-get install -y git curl zip unzip libpq-dev libonig-dev libxml2-dev libpng-dev libjpeg-dev libfreetype6-dev default-mysql-client &&
+        docker-php-ext-configure gd --with-freetype --with-jpeg &&
+        docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd &&
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
         while ! mysqladmin ping -h mysql -u backend_user -pcafe_password --silent; do
-          echo 'En attente de MySQL...'
-          sleep 1
-        done
-        
-        echo 'MySQL est prêt, démarrage de Laravel...'
-        cd /var/www/html
-        
-        # Installer les dépendances si nécessaire
+          echo 'En attente de MySQL...';
+          sleep 1;
+        done &&
+        echo 'MySQL est prêt, démarrage de Laravel...' &&
+        cd /var/www/html &&
         if [ ! -f 'vendor/autoload.php' ]; then
-          echo 'Installation des dépendances Composer...'
-          composer install
-        fi
-        
-        # Générer la clé APP_KEY si elle n'existe pas
+          echo 'Installation des dépendances Composer...' &&
+          composer install;
+        fi &&
         if [ -z '$${APP_KEY}' ] || ! grep -q 'APP_KEY=' .env; then
-          echo 'Génération de la clé Laravel...'
-          php artisan key:generate
-        fi
-        
-        # Exécuter les migrations et les seeds
-        echo 'Exécution des migrations et seeds...'
-        php artisan migrate:fresh --seed
-        
-        # Démarrer le serveur PHP
-        echo 'Démarrage du serveur Laravel...'
+          echo 'Génération de la clé Laravel...' &&
+          php artisan key:generate;
+        fi &&
+        echo 'Exécution des migrations et seeds...' &&
+        php artisan migrate:fresh --seed &&
+        echo 'Démarrage du serveur Laravel...' &&
         exec php -S 0.0.0.0:80 -t public
       "
     volumes:
@@ -62,28 +52,26 @@ services:
     depends_on:
       - mysql
 
-  # Worker de machine à café (nouveau service continu)
   coffee-worker:
     env_file:
       - ../backend/.env
-    build:
-      context: ../backend/vendor/laravel/sail/runtimes/8.2
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-    image: sail-8.2/app
+    image: php:8.2-cli
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     command: >
       sh -c "
-        # Attendre que Laravel soit prêt
+        apt-get update && 
+        apt-get install -y git curl zip unzip libpq-dev libonig-dev libxml2-dev default-mysql-client &&
+        docker-php-ext-install pdo_mysql mbstring &&
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
         while ! curl -s http://laravel.test > /dev/null; do
-          echo 'En attente de Laravel...'
-          sleep 2
-        done
-        
-        echo 'Démarrage du worker de machine à café...'
-        php /var/www/html/artisan coffee:worker
+          echo 'En attente de Laravel...';
+          sleep 2;
+        done &&
+        cd /var/www/html &&
+        composer install &&
+        echo 'Démarrage du worker de machine à café...' &&
+        php artisan coffee:worker
       "
     environment:
       WWWUSER: '${WWWUSER:-1000}'
@@ -101,28 +89,26 @@ services:
       - laravel.test
     restart: unless-stopped
 
-  # Worker de queue automatique (gardé pour autres tâches)
   queue-worker:
     env_file:
       - ../backend/.env
-    build:
-      context: ../backend/vendor/laravel/sail/runtimes/8.2
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-    image: sail-8.2/app
+    image: php:8.2-cli
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     command: >
       sh -c "
-        # Attendre que Laravel soit prêt
+        apt-get update && 
+        apt-get install -y git curl zip unzip libpq-dev libonig-dev libxml2-dev default-mysql-client &&
+        docker-php-ext-install pdo_mysql mbstring &&
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
         while ! curl -s http://laravel.test > /dev/null; do
-          echo 'En attente de Laravel...'
-          sleep 2
-        done
-        
-        echo 'Démarrage du worker de queue...'
-        php /var/www/html/artisan queue:work --verbose --tries=3 --timeout=90
+          echo 'En attente de Laravel...';
+          sleep 2;
+        done &&
+        cd /var/www/html &&
+        composer install &&
+        echo 'Démarrage du worker de queue...' &&
+        php artisan queue:work --verbose --tries=3 --timeout=90
       "
     environment:
       WWWUSER: '${WWWUSER:-1000}'
@@ -140,28 +126,26 @@ services:
       - laravel.test
     restart: unless-stopped
 
-  # Worker dédié pour Horizon (optionnel)
   horizon:
     env_file:
       - ../backend/.env
-    build:
-      context: ../backend/vendor/laravel/sail/runtimes/8.2
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-    image: sail-8.2/app
+    image: php:8.2-cli
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     command: >
       sh -c "
-        # Attendre que Laravel soit prêt
+        apt-get update && 
+        apt-get install -y git curl zip unzip libpq-dev libonig-dev libxml2-dev default-mysql-client &&
+        docker-php-ext-install pdo_mysql mbstring &&
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
         while ! curl -s http://laravel.test > /dev/null; do
-          echo 'En attente de Laravel...'
-          sleep 2
-        done
-        
-        echo 'Démarrage de Horizon...'
-        php /var/www/html/artisan horizon
+          echo 'En attente de Laravel...';
+          sleep 2;
+        done &&
+        cd /var/www/html &&
+        composer install &&
+        echo 'Démarrage de Horizon...' &&
+        php artisan horizon
       "
     environment:
       WWWUSER: '${WWWUSER:-1000}'
@@ -179,7 +163,7 @@ services:
       - laravel.test
     restart: unless-stopped
     profiles:
-      - horizon # Ce service ne démarre que si vous activez le profil
+      - horizon
 
   frontend:
     image: node:22-alpine
@@ -189,16 +173,13 @@ services:
     working_dir: /app
     command: >
       sh -c "
-        echo 'Installation des dépendances Node.js...'
-        npm install
-        
-        # Attendre que Laravel soit disponible
-        echo 'En attente de Laravel...'
+        echo 'Installation des dépendances Node.js...' &&
+        npm install &&
+        echo 'En attente de Laravel...' &&
         while ! nc -z laravel.test 80; do
-          sleep 1
-        done
-        
-        echo 'Démarrage du serveur frontend...'
+          sleep 1;
+        done &&
+        echo 'Démarrage du serveur frontend...' &&
         npm run dev -- -H 0.0.0.0
       "
     ports:
@@ -212,7 +193,6 @@ services:
     depends_on:
       - laravel.test
 
-  # Service MySQL modifié pour résoudre les problèmes
   mysql:
     image: mysql:8.0
     container_name: cafe-mysql
