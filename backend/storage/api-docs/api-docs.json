@@ -1,0 +1,665 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Machine à Café Connectée",
+        "description": "API pour simuler une machine à café connectée",
+        "contact": {
+            "email": "contact@cafe-connecte.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "Serveur API"
+        }
+    ],
+    "paths": {
+        "/api/v1/coffees": {
+            "get": {
+                "tags": [
+                    "Coffees"
+                ],
+                "summary": "Liste tous les cafés disponibles",
+                "operationId": "8c44df84fbb5b4b5fad48027080ea300",
+                "responses": {
+                    "200": {
+                        "description": "Liste des cafés"
+                    }
+                }
+            }
+        },
+        "/api/v1/coffees/{coffee}": {
+            "get": {
+                "tags": [
+                    "Coffees"
+                ],
+                "summary": "Affiche les détails d'un café",
+                "operationId": "82c9fd74f3d2bd3de31e7f80dd8313f6",
+                "parameters": [
+                    {
+                        "name": "coffee",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails du café"
+                    },
+                    "404": {
+                        "description": "Café non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/v1/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Liste toutes les commandes",
+                "operationId": "17a756abe25d9d1b327f2f3f1f4ff8a1",
+                "responses": {
+                    "200": {
+                        "description": "Liste des commandes"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Crée une nouvelle commande",
+                "operationId": "98d74d33f0dfdd95d65841e55084c4da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "coffee_id"
+                                ],
+                                "properties": {
+                                    "coffee_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "customer_name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "pickup_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-05-11 15:30:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Commande créée"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/v1/orders/{order}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Affiche une commande spécifique",
+                "operationId": "d95b0fa3593e90f7d275759583a60de8",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de la commande"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Met à jour une commande",
+                "operationId": "afffacb1c4f69451fb7eb58eff5db7d5",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "coffee_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "customer_name": {
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "pickup_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-05-11 15:30:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Commande mise à jour"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Supprime une commande",
+                "operationId": "d418d7c2b44b7b122ac58d9fbf8084f1",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Commande supprimée"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    },
+                    "400": {
+                        "description": "Impossible de supprimer une commande en cours"
+                    }
+                }
+            }
+        },
+        "/api/v1/process/{order}/start": {
+            "post": {
+                "tags": [
+                    "Process"
+                ],
+                "summary": "Démarre le processus de préparation",
+                "operationId": "5c75d967dd16323d207275df5d287124",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Processus démarré"
+                    },
+                    "400": {
+                        "description": "Commande déjà en cours"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/v1/process/{order}/progress": {
+            "get": {
+                "tags": [
+                    "Process"
+                ],
+                "summary": "Récupère la progression du processus",
+                "operationId": "0f82bffdaf51db6659548c5fc31727d0",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Progression du processus"
+                    },
+                    "404": {
+                        "description": "Commande non trouvée"
+                    }
+                }
+            }
+        },
+        "/api/v1/queue/status": {
+            "get": {
+                "tags": [
+                    "Queue"
+                ],
+                "summary": "Obtient le statut de la file d'attente",
+                "operationId": "869c227b0003be7396b4c4702edd602c",
+                "responses": {
+                    "200": {
+                        "description": "Statut de la file d'attente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QueueStatus"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/queue/next-slot": {
+            "get": {
+                "tags": [
+                    "Queue"
+                ],
+                "summary": "Obtient le prochain créneau disponible",
+                "operationId": "48b459d99ecbe392b8fbc0fd4af85fc9",
+                "responses": {
+                    "200": {
+                        "description": "Prochain créneau disponible",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "next_available_slot": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "waiting_time_minutes": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "queue_position": {
+                                            "type": "integer",
+                                            "example": 4
+                                        },
+                                        "estimated_completion_time": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/queue/available-slots": {
+            "get": {
+                "tags": [
+                    "Queue"
+                ],
+                "summary": "Obtient la liste des créneaux disponibles",
+                "operationId": "4ee2d294896d0ea2bd36725943766091",
+                "responses": {
+                    "200": {
+                        "description": "Liste des créneaux disponibles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "available_slots": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TimeSlot"
+                                            }
+                                        },
+                                        "earliest_slot": {
+                                            "$ref": "#/components/schemas/TimeSlot"
+                                        },
+                                        "total_options": {
+                                            "type": "integer",
+                                            "example": 8
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/queue/validate-slot": {
+            "post": {
+                "tags": [
+                    "Queue"
+                ],
+                "summary": "Valide si un créneau est disponible",
+                "operationId": "786b9b92aa3e58aa20e8395d5cab42a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "pickup_time"
+                                ],
+                                "properties": {
+                                    "pickup_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-05-11 15:30:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Résultat de la validation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "is_available": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "requested_time": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "earliest_available_time": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Créneau disponible"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Données invalides",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "QueueStatus": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Order"
+                    },
+                    {
+                        "properties": {
+                            "current_order": {
+                                "$ref": "#/components/schemas/Order"
+                            },
+                            "queue": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Order"
+                                }
+                            },
+                            "queue_length": {
+                                "type": "integer",
+                                "example": 3
+                            },
+                            "estimated_wait_time": {
+                                "type": "number",
+                                "format": "float",
+                                "example": 180.5
+                            },
+                            "machine_status": {
+                                "type": "string",
+                                "enum": [
+                                    "idle",
+                                    "busy"
+                                ],
+                                "example": "busy"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "TimeSlot": {
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Order"
+                    },
+                    {
+                        "properties": {
+                            "time": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2025-05-11T15:30:00Z"
+                            },
+                            "formatted_time": {
+                                "type": "string",
+                                "example": "2025-05-11 15:30:00"
+                            },
+                            "display_time": {
+                                "type": "string",
+                                "example": "11/05 à 15:30"
+                            },
+                            "is_next_available": {
+                                "type": "boolean",
+                                "example": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "Coffee": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Espresso"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 2.5
+                    },
+                    "preparation_time": {
+                        "type": "integer",
+                        "example": 30
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Order": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "coffee_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "brewing",
+                            "completed",
+                            "cancelled"
+                        ],
+                        "example": "pending"
+                    },
+                    "progress": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": 0
+                    },
+                    "estimated_completion_time": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "customer_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "NotFound": {
+                "description": "Ressource non trouvée",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Ressource non trouvée"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "ValidationError": {
+                "description": "Erreur de validation",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Validation error"
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Queue",
+            "description": "Opérations sur la file d'attente et les créneaux"
+        },
+        {
+            "name": "Coffees",
+            "description": "Opérations sur les types de café"
+        },
+        {
+            "name": "Orders",
+            "description": "Opérations sur les commandes"
+        },
+        {
+            "name": "Process",
+            "description": "Opérations sur le processus de préparation"
+        }
+    ]
+}

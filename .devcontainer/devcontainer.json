@@ -1,0 +1,36 @@
+{
+    "name": "Café Connecté",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "laravel.test",
+    "workspaceFolder": "/var/www/html",
+    "forwardPorts": [
+        8000,
+        3000,
+        3306
+    ],
+    "mounts": [
+        "source=${localWorkspaceFolder}/frontend,target=/var/www/html/frontend,type=bind"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "DEVSENSE.phptools-vscode",
+                "bmewburn.vscode-intelephense-client",
+                "mikestead.dotenv",
+                "amiralizadeh9480.laravel-extra-intellisense",
+                "ryannaddy.laravel-artisan",
+                "onecentlin.laravel5-snippets",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "bradlc.vscode-tailwindcss",
+                "ms-vscode.vscode-typescript-next",
+                "rangav.vscode-thunder-client"
+            ],
+            "settings": {
+                "php.format.codeStyle": "PSR-2"
+            }
+        }
+    },
+    "postCreateCommand": "composer install && php artisan key:generate && php artisan migrate:fresh --seed",
+    "remoteUser": "sail"
+}

@@ -1,0 +1,30 @@
+# Uniquement les dépendances et données générées
+/backend/node_modules
+/frontend/node_modules
+node_modules/
+/backend/vendor
+
+# Fichiers temporaires et logs
+*.log
+.DS_Store
+Thumbs.db
+
+# Données persistantes des conteneurs (générées automatiquement)
+/mysql-data
+/redis-data
+/data
+
+# Fichiers temporaires Laravel spécifiques à l'environnement
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/views/*
+/backend/storage/logs/*
+# Mais garder les dossiers eux-mêmes (.gitkeep)
+!backend/storage/framework/cache/.gitkeep
+!backend/storage/framework/sessions/.gitkeep
+!backend/storage/framework/views/.gitkeep
+!backend/storage/logs/.gitkeep
+
+# Next.js build output
+/frontend/.next
+/frontend_backup_avant_creneaux/.next
